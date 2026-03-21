@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dn STARUP — Graphic Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E8341A;
+    --red-dark: #c0280f;
+    --teal: #2AACB8;
+    --teal-light: #4ecbd6;
+    --white: #f5f5f0;
+    --dark: #0e0e0e;
+    --gray: #1a1a1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--teal);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+    mix-blend-mode: difference;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%;
+    padding: 20px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 100;
+    background: rgba(14,14,14,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(42,172,184,0.15);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+  .nav-logo span { color: var(--teal); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: rgba(245,245,240,0.6);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--teal); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 120px 60px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(232,52,26,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(42,172,184,0.08) 0%, transparent 50%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(42,172,184,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(42,172,184,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 700px; }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(42,172,184,0.15);
+    border: 1px solid rgba(42,172,184,0.4);
+    color: var(--teal);
+    padding: 6px 18px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    border-radius: 2px;
+    animation: fadeUp 0.8s ease forwards;
+    opacity: 0;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 10vw, 130px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    animation: fadeUp 0.8s 0.2s ease forwards;
+    opacity: 0;
+  }
+  .hero h1 .red { color: var(--red); }
+  .hero h1 .teal { color: var(--teal); }
+  .hero-sub {
+    margin-top: 28px;
+    font-size: 16px;
+    color: rgba(245,245,240,0.55);
+    line-height: 1.7;
+    max-width: 460px;
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    animation: fadeUp 0.8s 0.4s ease forwards;
+    opacity: 0;
+  }
+  .hero-btns {
+    display: flex; gap: 16px; margin-top: 44px;
+    animation: fadeUp 0.8s 0.6s ease forwards;
+    opacity: 0;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    padding: 14px 36px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: none;
+    transition: all 0.3s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--teal);
+    padding: 14px 36px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--teal);
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { background: rgba(42,172,184,0.1); transform: translateY(-2px); }
+
+  .hero-float {
+    position: absolute; right: 60px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 16px;
+    animation: fadeLeft 1s 0.8s ease forwards;
+    opacity: 0;
+  }
+  .hero-stat {
+    text-align: right;
+  }
+  .hero-stat .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: var(--red);
+  }
+  .hero-stat .label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(245,245,240,0.4);
+  }
+  .hero-divider { width: 1px; height: 60px; background: rgba(42,172,184,0.3); margin-left: auto; }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    background: var(--red);
+    padding: 14px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-flex;
+    animation: marquee 20s linear infinite;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    padding: 0 32px;
+    color: rgba(245,245,240,0.9);
+  }
+  .marquee-dot { color: var(--teal-light); }
+
+  /* SERVICES */
+  .services {
+    padding: 100px 60px;
+    position: relative;
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .section-title span { color: var(--red); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .service-card {
+    background: var(--gray);
+    padding: 44px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+    transform: scaleX(0);
+    transition: transform 0.4s;
+  }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { background: #222; transform: translateY(-4px); }
+
+  .service-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: rgba(232,52,26,0.15);
+    line-height: 1;
+    margin-bottom: 20px;
+    transition: color 0.4s;
+  }
+  .service-card:hover .service-num { color: rgba(232,52,26,0.3); }
+  .service-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .service-desc {
+    font-size: 14px;
+    color: rgba(245,245,240,0.5);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .service-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--teal);
+    letter-spacing: 1px;
+  }
+  .service-price span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: rgba(245,245,240,0.4);
+    font-weight: 400;
+  }
+
+  /* PORTFOLIO */
+  .portfolio {
+    padding: 100px 60px;
+    background: #0a0a0a;
+  }
+  .portfolio-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 60px;
+  }
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 12px;
+  }
+  .port-item {
+    background: var(--gray);
+    overflow: hidden;
+    position: relative;
+    cursor: none;
+  }
+  .port-item:nth-child(1) { grid-column: span 7; grid-row: span 2; min-height: 400px; }
+  .port-item:nth-child(2) { grid-column: span 5; min-height: 190px; }
+  .port-item:nth-child(3) { grid-column: span 5; min-height: 190px; }
+  .port-item:nth-child(4) { grid-column: span 4; min-height: 280px; }
+  .port-item:nth-child(5) { grid-column: span 4; min-height: 280px; }
+  .port-item:nth-child(6) { grid-column: span 4; min-height: 280px; }
+
+  .port-inner {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    min-height: inherit;
+    position: relative;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .port-item:hover .port-inner { transform: scale(1.04); }
+
+  .port-placeholder {
+    width: 100%; height: 100%;
+    min-height: inherit;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px;
+  }
+  .port-placeholder.p1 { background: linear-gradient(135deg, #E8341A 0%, #c0280f 100%); }
+  .port-placeholder.p2 { background: linear-gradient(135deg, #2AACB8 0%, #1a7a84 100%); }
+  .port-placeholder.p3 { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid rgba(232,52,26,0.3); }
+  .port-placeholder.p4 { background: linear-gradient(135deg, #0e0e0e 0%, #E8341A 200%); border: 1px solid rgba(42,172,184,0.2); }
+  .port-placeholder.p5 { background: linear-gradient(135deg, #2AACB8 0%, #0e0e0e 150%); }
+  .port-placeholder.p6 { background: linear-gradient(135deg, #c0280f 0%, #0e0e0e 120%); }
+
+  .port-icon {
+    font-size: 48px;
+    opacity: 0.4;
+  }
+  .port-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    opacity: 0.7;
+    text-align: center;
+  }
+  .port-sub {
+    font-size: 11px;
+    letter-spacing: 2px;
+    opacity: 0.4;
+    text-transform: uppercase;
+  }
+
+  .port-overlay {
+    position: absolute; inset: 0;
+    background: rgba(14,14,14,0.85);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    flex-direction: column; gap: 8px;
+  }
+  .port-item:hover .port-overlay { opacity: 1; }
+  .port-overlay-tag {
+    background: var(--red);
+    padding: 6px 20px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .port-overlay-text {
+    font-size: 13px;
+    color: rgba(245,245,240,0.6);
+    letter-spacing: 1px;
+  }
+
+  /* CONTACT */
+  .contact {
+    padding: 100px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .contact-left {}
+  .contact-info {
+    margin-top: 44px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .contact-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px;
+    background: var(--gray);
+    border-left: 3px solid var(--teal);
+    transition: border-color 0.3s;
+  }
+  .contact-item:hover { border-color: var(--red); }
+  .contact-icon { font-size: 22px; }
+  .contact-detail { font-size: 13px; color: rgba(245,245,240,0.5); }
+  .contact-val { font-size: 15px; font-weight: 500; margin-top: 2px; }
+
+  .contact-right {}
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    background: var(--gray);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: var(--white);
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+    cursor: none;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--teal);
+  }
+  .form-textarea { resize: vertical; min-height: 120px; }
+  .form-select option { background: var(--gray); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .btn-submit {
+    width: 100%;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 4px;
+    cursor: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-submit::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.1);
+    transition: left 0.4s;
+  }
+  .btn-submit:hover::after { left: 100%; }
+  .btn-submit:hover { background: var(--red-dark); }
+
+  /* FREE OFFER BANNER */
+  .offer-banner {
+    background: var(--teal);
+    padding: 28px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .offer-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--dark);
+  }
+  .offer-sub {
+    font-size: 14px;
+    color: rgba(14,14,14,0.65);
+    margin-top: 4px;
+  }
+  .offer-btn {
+    background: var(--dark);
+    color: var(--white);
+    padding: 14px 36px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    text-decoration: none;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  .offer-btn:hover { background: var(--red); }
+
+  /* FOOTER */
+  footer {
+    background: #060606;
+    padding: 40px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 3px;
+  }
+  .footer-logo span { color: var(--teal); }
+  .footer-copy { font-size: 12px; color: rgba(245,245,240,0.3); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    font-size: 12px;
+    color: rgba(245,245,240,0.4);
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--teal); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translate(30px, -50%); }
+    to { opacity: 1; transform: translate(0, -50%); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Success message */
+  .success-msg {
+    display: none;
+    background: rgba(42,172,184,0.15);
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    padding: 16px;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-top: 12px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Dn <span>STARUP</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">✦ Available for Projects</div>
+    <h1>
+      <span class="teal">Graphic</span><br>
+      <span class="red">Design</span><br>
+      Studio
+    </h1>
+    <p class="hero-sub">Your time, our best design — crafted just for you. Thumbnails, posts & social media visuals that actually convert.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Get Free Design</a>
+      <a href="#portfolio" class="btn-outline">View Work</a>
+    </div>
+  </div>
+  <div class="hero-float">
+    <div class="hero-stat">
+      <div class="num">100%</div>
+      <div class="label">Satisfaction</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="num">₹199</div>
+      <div class="label">Starting from</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="num">24H</div>
+      <div class="label">Delivery</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">THUMBNAILS <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">INSTAGRAM POSTS <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">SOCIAL MEDIA <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">BRAND DESIGN <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">FIRST DESIGN FREE <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">THUMBNAILS <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">INSTAGRAM POSTS <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">SOCIAL MEDIA <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">BRAND DESIGN <span class="marquee-dot">✦</span></span>
+    <span class="marquee-item">FIRST DESIGN FREE <span class="marquee-dot">✦</span></span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-label">What We Offer</div>
+  <div class="section-title">Our <span>Services</span></div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <div class="service-name">YouTube Thumbnails</div>
+      <div class="service-desc">High-CTR thumbnails designed to make viewers click. Bold, expressive, and scroll-stopping every time.</div>
+      <div class="service-price">₹199 <span>/ thumbnail</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <div class="service-name">Instagram Posts</div>
+      <div class="service-desc">Feed posts, reels covers, and story designs that grow your brand's visual identity on Instagram.</div>
+      <div class="service-price">₹299 <span>/ post</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <div class="service-name">Social Media Posts</div>
+      <div class="service-desc">Custom graphics for any platform — Twitter, LinkedIn, Facebook. Consistent branding, zero hassle.</div>
+      <div class="service-price">₹199 <span>/ post</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FREE OFFER BANNER -->
+<div class="offer-banner">
+  <div>
+    <div class="offer-text">🔥 First Design Absolutely FREE!</div>
+    <div class="offer-sub">No commitment. No payment. Just send us your requirements and we'll deliver.</div>
+  </div>
+  <a href="#contact" class="offer-btn">Claim Free Design →</a>
+</div>
+
+<!-- PORTFOLIO -->
+<section class="portfolio" id="portfolio">
+  <div class="portfolio-header">
+    <div>
+      <div class="section-label">Our Work</div>
+      <div class="section-title">Port<span>folio</span></div>
+    </div>
+    <p style="max-width:300px; color: rgba(245,245,240,0.4); font-size: 14px; line-height: 1.7;">Upload your actual designs here to show potential clients your real work.</p>
+  </div>
+  <div class="portfolio-grid">
+    <div class="port-item">
+      <div class="port-inner">
+        <div class="port-placeholder p1">
+          <div class="port-icon">🎨</div>
+          <div class="port-label">Your Best Work</div>
+          <div class="port-sub">Upload Design Here</div>
+        </div>
+        <div class="port-overlay">
+          <div class="port-overlay-tag">Featured</div>
+          <div class="port-overlay-text">Social Media Design</div>
+        </div>
+      </div>
+    </div>
+    <div class="port-item">
+      <div class="port-inner">
+        <div class="port-placeholder p2">
+          <div class="port-icon">▶️</div>
+          <div class="port-label">YouTube Thumbnail</div>
+          <div class="port-sub">Upload Here</div>
+        </div>
+        <div class="port-overlay">
+          <div class="port-overlay-tag">Thumbnail</div>
+          <div class="port-overlay-text">YouTube Design</div>
+        </div>
+      </div>
+    </div>
+    <div class="port-item">
+      <div class="port-inner">
+        <div class="port-placeholder p3">
+          <div class="port-icon">📸</div>
+          <div class="port-label">Instagram Post</div>
+          <div class="port-sub">Upload Here</div>
+        </div>
+        <div class="port-overlay">
+          <div class="port-overlay-tag">Instagram</div>
+          <div class="port-overlay-text">Feed Post</div>
+        </div>
+      </div>
+    </div>
+    <div class="port-item">
+      <div class="port-inner">
+        <div class="port-placeholder p4">
+          <div class="port-icon">💼</div>
+          <div class="port-label">Brand Design</div>
+          <div class="port-sub">Upload Here</div>
+        </div>
+        <div class="port-overlay">
+          <div class="port-overlay-tag">Branding</div>
+          <div class="port-overlay-text">Logo & Identity</div>
+        </div>
+      </div>
+    </div>
+    <div class="port-item">
+      <div class="port-inner">
+        <div class="port-placeholder p5">
+          <div class="port-icon">📱</div>
+          <div class="port-label">Social Post</div>
+          <div class="port-sub">Upload Here</div>
+        </div>
+        <div class="port-overlay">
+          <div class="port-overlay-tag">Social</div>
+          <div class="port-overlay-text">Multi-Platform</div>
+        </div>
+      </div>
+    </div>
+    <div class="port-item">
+      <div class="port-inner">
+        <div class="port-placeholder p6">
+          <div class="port-icon">✨</div>
+          <div class="port-label">Your Work Here</div>
+          <div class="port-sub">Upload Here</div>
+        </div>
+        <div class="port-overlay">
+          <div class="port-overlay-tag">Design</div>
+          <div class="port-overlay-text">Creative Work</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-left">
+    <div class="section-label">Get In Touch</div>
+    <div class="section-title">Let's <span>Work</span><br>Together</div>
+    <div class="contact-info">
+      <div class="contact-item">
+        <div class="contact-icon">📸</div>
+        <div>
+          <div class="contact-detail">Instagram</div>
+          <div class="contact-val">@dn_starup</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">▶️</div>
+        <div>
+          <div class="contact-detail">YouTube</div>
+          <div class="contact-val">Dn-STARUP</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📧</div>
+        <div>
+          <div class="contact-detail">Email</div>
+          <div class="contact-val">dnstarupsupport@gmail.com</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-detail">WhatsApp / Call</div>
+          <div class="contact-val">+91 — Update your number</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="contact-right">
+    <form id="contactForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input class="form-input" type="text" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contact / Instagram</label>
+          <input class="form-input" type="text" placeholder="@yourhandle" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Service Needed</label>
+        <select class="form-select form-input">
+          <option value="">Select a service...</option>
+          <option>YouTube Thumbnail — ₹199</option>
+          <option>Instagram Post — ₹299</option>
+          <option>Social Media Post — ₹199</option>
+          <option>🎁 First Design FREE</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tell Us Your Idea</label>
+        <textarea class="form-textarea" placeholder="Describe what you need — color, style, text to include..."></textarea>
+      </div>
+      <button type="submit" class="btn-submit">Send Request →</button>
+      <div class="success-msg" id="successMsg">✓ Message sent! We'll DM you within 24 hours.</div>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Dn <span>STARUP</span></div>
+  <div class="footer-copy">© 2026 Dn STARUP. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#services">Services</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 6 + 'px';
+    cursor.style.top = my - 6 + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx - 18) * 0.12;
+    ry += (my - ry - 18) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Form submit
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    document.getElementById('successMsg').style.display = 'block';
+    this.reset();
+    setTimeout(() => document.getElementById('successMsg').style.display = 'none', 4000);
+  });
+</script>
+</body>
+</html>
