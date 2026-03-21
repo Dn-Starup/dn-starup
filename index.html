@@ -1057,4 +1057,12 @@
   });
 
   // Form submit
-  document.getElementById('contactForm').addEventListener('submit', function(
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    // Let formspree handle it - just show message after delay
+    setTimeout(() => {
+      document.getElementById('successMsg').style.display = 'block';
+    }, 500);
+  });
+</script>
+</body>
+</html>
