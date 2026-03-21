@@ -25,29 +25,44 @@
     color: var(--white);
     font-family: 'DM Sans', sans-serif;
     overflow-x: hidden;
-    cursor: none;
   }
 
-  /* Custom Cursor */
-  .cursor {
-    width: 12px; height: 12px;
+
+
+  /* Cool Mouse Trail Effect */
+  .cursor-dot {
+    width: 8px; height: 8px;
     background: var(--teal);
     border-radius: 50%;
     position: fixed;
     pointer-events: none;
     z-index: 9999;
-    transition: transform 0.1s;
-    mix-blend-mode: difference;
+    transform: translate(-50%, -50%);
+    transition: background 0.3s;
   }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 2px solid var(--red);
+  .cursor-trail {
+    width: 6px; height: 6px;
     border-radius: 50%;
     position: fixed;
     pointer-events: none;
     z-index: 9998;
-    transition: all 0.15s ease;
-    mix-blend-mode: difference;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: trailFade 0.6s ease forwards;
+  }
+  @keyframes trailFade {
+    0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.1); }
+  }
+  .cursor-glow {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(42,172,184,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: all 0.1s ease;
   }
 
   /* NAV */
@@ -149,7 +164,6 @@
     text-transform: uppercase;
     text-decoration: none;
     border: none;
-    cursor: none;
     transition: all 0.3s;
     clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
   }
@@ -164,7 +178,6 @@
     text-transform: uppercase;
     text-decoration: none;
     border: 1px solid var(--teal);
-    cursor: none;
     transition: all 0.3s;
   }
   .btn-outline:hover { background: rgba(42,172,184,0.1); transform: translateY(-2px); }
@@ -311,7 +324,6 @@
     background: var(--gray);
     overflow: hidden;
     position: relative;
-    cursor: none;
   }
   .port-item:nth-child(1) { grid-column: span 7; grid-row: span 2; min-height: 400px; }
   .port-item:nth-child(2) { grid-column: span 5; min-height: 190px; }
@@ -429,7 +441,6 @@
     font-size: 15px;
     outline: none;
     transition: border-color 0.3s;
-    cursor: none;
   }
   .form-input:focus, .form-textarea:focus, .form-select:focus {
     border-color: var(--teal);
@@ -448,7 +459,6 @@
     font-family: 'Bebas Neue', sans-serif;
     font-size: 20px;
     letter-spacing: 4px;
-    cursor: none;
     transition: all 0.3s;
     position: relative;
     overflow: hidden;
@@ -549,12 +559,67 @@
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--dark); }
   ::-webkit-scrollbar-thumb { background: var(--red); }
+
+  /* ===== MOUSE GLOW EFFECT ===== */
+  .glow-dot {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: screen;
+  }
+
+  /* ===== MOBILE RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+
+    .hero { padding: 100px 20px 60px; }
+    .hero h1 { font-size: 58px; }
+    .hero-sub { font-size: 17px; }
+    .hero-btns { flex-direction: column; gap: 12px; }
+    .btn-primary, .btn-outline { text-align: center; padding: 14px 20px; }
+    .hero-float { display: none; }
+
+    .marquee-item { font-size: 14px; padding: 0 20px; }
+
+    .services { padding: 60px 20px; }
+    .services-grid { grid-template-columns: 1fr; gap: 12px; }
+
+    .offer-banner { flex-direction: column; gap: 20px; padding: 28px 20px; text-align: center; }
+    .offer-text { font-size: 22px; }
+
+    .portfolio { padding: 60px 20px; }
+    .portfolio-header { flex-direction: column; gap: 16px; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .port-item:nth-child(1) { grid-column: span 2; grid-row: span 1; min-height: 220px; }
+    .port-item:nth-child(2) { grid-column: span 1; min-height: 160px; }
+    .port-item:nth-child(3) { grid-column: span 1; min-height: 160px; }
+    .port-item:nth-child(4) { grid-column: span 2; min-height: 160px; }
+    .port-item:nth-child(5) { grid-column: span 1; min-height: 160px; }
+    .port-item:nth-child(6) { grid-column: span 1; min-height: 160px; }
+
+    .contact { padding: 60px 20px; grid-template-columns: 1fr; gap: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+
+    footer { flex-direction: column; gap: 16px; padding: 30px 20px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+
+    .section-title { font-size: 42px; }
+  }
+
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 46px; }
+    .offer-text { font-size: 18px; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .port-item:nth-child(n) { grid-column: span 1; min-height: 200px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
 
 <!-- NAV -->
 <nav>
@@ -664,14 +729,10 @@
   <div class="portfolio-grid">
     <div class="port-item">
       <div class="port-inner">
-        <div class="port-placeholder p1">
-          <div class="port-icon">🎨</div>
-          <div class="port-label">Your Best Work</div>
-          <div class="port-sub">Upload Design Here</div>
-        </div>
+        <img src="Name.png" alt="Dn STARUP Graphic Design Poster" style="width:100%;height:100%;object-fit:cover;min-height:400px;display:block;">
         <div class="port-overlay">
           <div class="port-overlay-tag">Featured</div>
-          <div class="port-overlay-text">Social Media Design</div>
+          <div class="port-overlay-text">Graphic Design Poster</div>
         </div>
       </div>
     </div>
@@ -767,7 +828,7 @@
         <div class="contact-icon">📧</div>
         <div>
           <div class="contact-detail">Email</div>
-          <div class="contact-val">dnstarupsupport@gmail.com</div>
+          <div class="contact-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6a0e04191e0b181f1a191f1a1a05181e2a0d070b030644090507">[email&#160;protected]</a></div>
         </div>
       </div>
       <div class="contact-item">
@@ -780,33 +841,37 @@
     </div>
   </div>
   <div class="contact-right">
-    <form id="contactForm">
+    <form id="contactForm" action="https://formspree.io/f/xlgpkjra" method="POST">
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Your Name</label>
-          <input class="form-input" type="text" placeholder="John Doe" required>
+          <input class="form-input" type="text" name="name" placeholder="John Doe" required>
         </div>
         <div class="form-group">
           <label class="form-label">Contact / Instagram</label>
-          <input class="form-input" type="text" placeholder="@yourhandle" required>
+          <input class="form-input" type="text" name="instagram" placeholder="@yourhandle" required>
         </div>
       </div>
       <div class="form-group">
+        <label class="form-label">Email (Optional)</label>
+        <input class="form-input" type="email" name="email" placeholder="yourmail@gmail.com">
+      </div>
+      <div class="form-group">
         <label class="form-label">Service Needed</label>
-        <select class="form-select form-input">
+        <select class="form-select form-input" name="service">
           <option value="">Select a service...</option>
-          <option>YouTube Thumbnail — ₹199</option>
-          <option>Instagram Post — ₹299</option>
-          <option>Social Media Post — ₹199</option>
-          <option>🎁 First Design FREE</option>
+          <option>YouTube Thumbnail — &#8377;199</option>
+          <option>Instagram Post — &#8377;299</option>
+          <option>Social Media Post — &#8377;199</option>
+          <option>First Design FREE</option>
         </select>
       </div>
       <div class="form-group">
         <label class="form-label">Tell Us Your Idea</label>
-        <textarea class="form-textarea" placeholder="Describe what you need — color, style, text to include..."></textarea>
+        <textarea class="form-textarea" name="message" placeholder="Describe what you need — color, style, text to include..."></textarea>
       </div>
-      <button type="submit" class="btn-submit">Send Request →</button>
-      <div class="success-msg" id="successMsg">✓ Message sent! We'll DM you within 24 hours.</div>
+      <button type="submit" class="btn-submit">Send Request &#8594;</button>
+      <div class="success-msg" id="successMsg">&#10003; Message sent! We will DM you within 24 hours.</div>
     </form>
   </div>
 </section>
@@ -822,32 +887,120 @@
   </div>
 </footer>
 
-<script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+  // Cool Mouse Trail Effect
+  const dot = document.getElementById('cursorDot');
+  const glow = document.getElementById('cursorGlow');
+  const colors = ['#2AACB8', '#E8341A', '#4ecbd6', '#ff6b47', '#ffffff'];
+  let colorIndex = 0;
+  let lastX = 0, lastY = 0;
+  let glowX = 0, glowY = 0;
+
   document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx - 6 + 'px';
-    cursor.style.top = my - 6 + 'px';
+    const x = e.clientX, y = e.clientY;
+    
+    // Main dot
+    dot.style.left = x + 'px';
+    dot.style.top = y + 'px';
+
+    // Glow follows slowly
+    glowX += (x - glowX) * 0.08;
+    glowY += (y - glowY) * 0.08;
+    glow.style.left = glowX + 'px';
+    glow.style.top = glowY + 'px';
+
+    // Create trail particle
+    const dist = Math.hypot(x - lastX, y - lastY);
+    if (dist > 12) {
+      const trail = document.createElement('div');
+      trail.className = 'cursor-trail';
+      const size = Math.random() * 8 + 4;
+      trail.style.cssText = `
+        left: ${x}px; top: ${y}px;
+        width: ${size}px; height: ${size}px;
+        background: ${colors[colorIndex % colors.length]};
+        box-shadow: 0 0 ${size * 2}px ${colors[colorIndex % colors.length]};
+      `;
+      document.body.appendChild(trail);
+      colorIndex++;
+      setTimeout(() => trail.remove(), 600);
+      lastX = x; lastY = y;
+    }
   });
-  function animateRing() {
-    rx += (mx - rx - 18) * 0.12;
-    ry += (my - ry - 18) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animateRing);
+
+  // Hover on clickable elements
+  document.querySelectorAll('a, button, .service-card, .port-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      dot.style.transform = 'translate(-50%, -50%) scale(3)';
+      dot.style.background = 'var(--red)';
+      dot.style.mixBlendMode = 'difference';
+    });
+    el.addEventListener('mouseleave', () => {
+      dot.style.transform = 'translate(-50%, -50%) scale(1)';
+      dot.style.background = 'var(--teal)';
+      dot.style.mixBlendMode = 'normal';
+    });
+  });
+
+  // Glow animation loop
+  function animateGlow() {
+    glowX += (lastX - glowX) * 0.05;
+    glowY += (lastY - glowY) * 0.05;
+    glow.style.left = glowX + 'px';
+    glow.style.top = glowY + 'px';
+    requestAnimationFrame(animateGlow);
   }
-  animateRing();
+  animateGlow();
+</script><script>
+
+
+  // ===== COOL MOUSE GLOW EFFECT =====
+  const colors = ['#E8341A', '#2AACB8', '#ff6b35', '#4ecbd6', '#fff'];
+  const dots = [];
+  const NUM = 18;
+
+  for (let i = 0; i < NUM; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'glow-dot';
+    const size = Math.random() * 10 + 4;
+    dot.style.cssText = `width:${size}px;height:${size}px;background:${colors[i % colors.length]};opacity:0;filter:blur(${size/3}px);`;
+    document.body.appendChild(dot);
+    dots.push({ el: dot, x: 0, y: 0, tx: 0, ty: 0, speed: 0.08 + i * 0.018 });
+  }
+
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dots.forEach(d => { d.tx = mouseX; d.ty = mouseY; d.el.style.opacity = '0.85'; });
+  });
+  document.addEventListener('mouseleave', () => dots.forEach(d => d.el.style.opacity = '0'));
+
+  function animDots() {
+    dots.forEach((d, i) => {
+      d.x += (d.tx - d.x) * d.speed;
+      d.y += (d.ty - d.y) * d.speed;
+      d.el.style.left = (d.x - d.el.offsetWidth/2) + 'px';
+      d.el.style.top = (d.y - d.el.offsetHeight/2) + 'px';
+    });
+    requestAnimationFrame(animDots);
+  }
+  animDots();
+
+  // Click burst effect
+  document.addEventListener('click', e => {
+    for (let i = 0; i < 8; i++) {
+      const burst = document.createElement('div');
+      const size = Math.random() * 14 + 6;
+      burst.style.cssText = `position:fixed;width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:50%;left:${e.clientX - size/2}px;top:${e.clientY - size/2}px;pointer-events:none;z-index:9999;mix-blend-mode:screen;filter:blur(2px);transition:all 0.6s ease;`;
+      document.body.appendChild(burst);
+      setTimeout(() => {
+        burst.style.transform = `translate(${(Math.random()-0.5)*80}px,${(Math.random()-0.5)*80}px) scale(0)`;
+        burst.style.opacity = '0';
+      }, 10);
+      setTimeout(() => burst.remove(), 700);
+    }
+  });
 
   // Form submit
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    document.getElementById('successMsg').style.display = 'block';
-    this.reset();
-    setTimeout(() => document.getElementById('successMsg').style.display = 'none', 4000);
-  });
-</script>
-</body>
-</html>
+  document.getElementById('contactForm').addEventListener('submit', function(
