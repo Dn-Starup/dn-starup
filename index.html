@@ -1158,10 +1158,9 @@
     transform: translateY(-50%);
     width: 520px;
     height: 520px;
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
-    opacity: 0.10;
-    z-index: -1;
+    opacity: 0.13;
   }
 
   .globe-bg canvas {
@@ -1187,7 +1186,7 @@
 <div class="cursor-glow" id="cursorGlow"></div>
 
 <!-- NAV -->
-<nav style="position:relative;z-index:100;">
+<nav style="position:relative;z-index:10;">
   <div class="nav-logo">Dn <span>STARUP</span></div>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
@@ -1197,7 +1196,7 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" style="position:relative;z-index:10;">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="hero-content">
@@ -1232,7 +1231,7 @@
 </section>
 
 <!-- MARQUEE -->
-<div class="marquee-wrap">
+<div class="marquee-wrap" style="position:relative;z-index:10;">
   <div class="marquee-track">
     <span class="marquee-item">THUMBNAILS <span class="marquee-dot">✦</span></span>
     <span class="marquee-item">INSTAGRAM POSTS <span class="marquee-dot">✦</span></span>
@@ -1248,7 +1247,7 @@
 </div>
 
 <!-- SERVICES -->
-<section class="services" id="services">
+<section class="services" style="position:relative;z-index:10;" id="services">
   <div class="section-label">What We Offer</div>
   <div class="section-title">Our <span>Services</span></div>
   <div class="services-grid">
@@ -1274,7 +1273,7 @@
 </section>
 
 <!-- FREE OFFER BANNER -->
-<div class="offer-banner">
+<div class="offer-banner" style="position:relative;z-index:10;">
   <div>
     <div class="offer-text">🔥 First Design Absolutely FREE!</div>
     <div class="offer-sub">No commitment. No payment. Just send us your requirements and we'll deliver.</div>
@@ -1283,7 +1282,7 @@
 </div>
 
 <!-- PORTFOLIO -->
-<section class="portfolio" id="portfolio">
+<section class="portfolio" style="position:relative;z-index:10;" id="portfolio">
   <div style="text-align:center; margin-bottom:50px;">
     <div class="section-label">Our Work</div>
     <div class="section-title">Port<span>folio</span></div>
@@ -1448,7 +1447,7 @@
 </section>
 
 <!-- CONTACT -->
-<section class="contact" id="contact">
+<section class="contact" style="position:relative;z-index:10;" id="contact">
   <div class="contact-left">
     <div class="section-label">Get In Touch</div>
     <div class="section-title">Let's <span>Work</span><br>Together</div>
@@ -1520,7 +1519,7 @@
 </section>
 
 <!-- FOOTER -->
-<footer>
+<footer style="position:relative;z-index:10;">
   <div class="footer-logo">Dn <span>STARUP</span></div>
   <div class="footer-copy">© 2026 Dn STARUP. All rights reserved.</div>
   <div class="footer-links">
@@ -1932,7 +1931,7 @@
 
 
 <!-- GLOBAL PROFESSIONAL BACKGROUND -->
-<canvas id="globalBg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.55;"></canvas>
+<canvas id="globalBg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:0.55;"></canvas>
 <script>
 (function() {
   var canvas = document.getElementById('globalBg');
