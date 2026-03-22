@@ -69,6 +69,7 @@
   nav {
     position: fixed; top: 0; width: 100%;
     padding: 20px 60px;
+    z-index: 100;
     display: flex; justify-content: space-between; align-items: center;
     z-index: 100;
     background: rgba(14,14,14,0.85);
@@ -101,6 +102,7 @@
     padding: 120px 60px 60px;
     position: relative;
     overflow: hidden;
+    z-index: 1;
   }
   .hero-bg {
     position: absolute; inset: 0;
@@ -230,6 +232,7 @@
   .services {
     padding: 100px 60px;
     position: relative;
+    z-index: 1;
   }
   .section-label {
     font-size: 11px;
@@ -1074,9 +1077,110 @@
     .designs-grid { grid-template-columns: repeat(2, 1fr); }
     .cover-title { font-size: 38px; }
   }
+
+  @media (max-width: 768px) {
+    .book-container { padding: 0 10px; }
+    .page-inner { padding: 20px 16px; min-height: auto; }
+    .cover-title { font-size: 32px; }
+    .cat-btn { padding: 12px 16px; font-size: 13px; }
+    .designs-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .page-title { font-size: 18px; }
+    .back-btn { padding: 6px 12px; font-size: 12px; }
+    .book-page { min-height: auto; }
+  }
+
+
+  /* ===== GLOBAL TICKER ===== */
+  .global-ticker {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 500;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(232,52,26,0.4);
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .ticker-label {
+    background: var(--red);
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 4px 18px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    z-index: 2;
+  }
+
+  .ticker-track {
+    display: flex;
+    animation: tickerScroll 35s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(245,245,240,0.65);
+    padding: 0 40px;
+    flex-shrink: 0;
+  }
+
+  .ticker-item .tip-highlight {
+    color: var(--teal);
+    font-weight: 600;
+  }
+
+  .ticker-dot {
+    color: var(--red);
+    font-size: 16px;
+    margin: 0 10px;
+  }
+
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  body { padding-bottom: 44px; }
+
+
+  /* ===== ROTATING GLOBE ===== */
+  .globe-bg {
+    position: fixed;
+    right: -180px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 520px;
+    height: 520px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.13;
+  }
+
+  .globe-bg canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .globe-bg { display: none; }
+  }
+
 </style>
 </head>
 <body>
+
+
+<!-- ROTATING GLOBE -->
+<div class="globe-bg" id="globeBg">
+  <canvas id="globeCanvas"></canvas>
+</div>
 
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-glow" id="cursorGlow"></div>
@@ -1490,193 +1594,160 @@
   }
   animateGlow();
 
-  // ===== MOUSE TRAIL EFFECT =====
+  // ===== BOOK PORTFOLIO =====
+  var currentPage = 'coverPage';
+
+  function openCategory(cat) {
+    var pageMap = {
+      'thumbnails': 'thumbnailsPage',
+      'poster': 'posterPage',
+      'insta': 'instaPage',
+      'social': 'socialPage',
+      'brand': 'brandPage'
+    };
+    flipTo(pageMap[cat]);
+  }
+
+  function goBack() {
+    flipTo('coverPage');
+  }
+
+  function flipTo(targetId) {
+    var current = document.getElementById(currentPage);
+    var target = document.getElementById(targetId);
+    if (!current || !target || currentPage === targetId) return;
+
+    current.classList.add('flip-out');
+    current.classList.remove('active');
+
+    setTimeout(function() {
+      current.classList.remove('flip-out');
+      target.classList.add('active');
+      currentPage = targetId;
+    }, 350);
+  }
+
+  function openDesign(slot) {
+    var img = slot.querySelector('img');
+    if (!img) return;
+    var lb = document.getElementById('lightbox');
+    document.getElementById('lightboxImg').src = img.src;
+    lb.classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+
+  // ===== ROTATING GLOBE =====
   (function() {
-    var colors = ['#E8341A','#2AACB8','#ff6b35','#4ecbd6','#ffffff'];
-    var trail = [];
-    var N = 20;
-    for (var i = 0; i < N; i++) {
-      var el = document.createElement('div');
-      var sz = Math.max(6, 20 - i * 0.7);
-      el.style.cssText = 'position:fixed;width:'+sz+'px;height:'+sz+'px;background:'+colors[i%colors.length]+';border-radius:50%;pointer-events:none;z-index:99999;left:-200px;top:-200px;opacity:'+(1-i/N)+';box-shadow:0 0 '+(sz*2)+'px '+colors[i%colors.length]+';transition:none;';
-      document.body.appendChild(el);
-      trail.push({el:el, x:-200, y:-200, sz:sz});
-    }
-    var mx=-200, my=-200;
-    window.addEventListener('mousemove', function(e){ mx=e.clientX; my=e.clientY; });
-    function anim() {
-      var px=mx, py=my;
-      for(var i=0;i<trail.length;i++){
-        var t=trail[i];
-        t.x += (px-t.x)*0.3;
-        t.y += (py-t.y)*0.3;
-        t.el.style.left=(t.x-t.sz/2)+'px';
-        t.el.style.top=(t.y-t.sz/2)+'px';
-        px=t.x; py=t.y;
+    var canvas = document.getElementById('globeCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = 520, H = 520;
+    canvas.width = W;
+    canvas.height = H;
+    var cx = W/2, cy = H/2, R = 220;
+    var rotation = 0;
+    var scrollY = 0;
+
+    window.addEventListener('scroll', function() {
+      scrollY = window.scrollY;
+    });
+
+    // Lat/lon lines
+    function drawGlobe(rot) {
+      ctx.clearRect(0, 0, W, H);
+
+      // Outer glow
+      var grad = ctx.createRadialGradient(cx, cy, R*0.6, cx, cy, R);
+      grad.addColorStop(0, 'rgba(42,172,184,0.15)');
+      grad.addColorStop(1, 'rgba(232,52,26,0.05)');
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI*2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Clip to circle
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI*2);
+      ctx.clip();
+
+      // Longitude lines
+      ctx.strokeStyle = 'rgba(42,172,184,0.6)';
+      ctx.lineWidth = 0.8;
+      for (var lon = 0; lon < 180; lon += 20) {
+        var angle = lon * Math.PI / 180 + rot;
+        ctx.beginPath();
+        for (var lat = -90; lat <= 90; lat += 2) {
+          var phi = lat * Math.PI / 180;
+          var x = cx + R * Math.cos(phi) * Math.sin(angle);
+          var z = Math.cos(phi) * Math.cos(angle);
+          var y = cy - R * Math.sin(phi);
+          if (z > 0) {
+            if (lat === -90) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          } else {
+            ctx.moveTo(x, y);
+          }
+        }
+        ctx.stroke();
       }
-      requestAnimationFrame(anim);
+
+      // Latitude lines
+      ctx.strokeStyle = 'rgba(232,52,26,0.4)';
+      ctx.lineWidth = 0.6;
+      for (var lat2 = -80; lat2 <= 80; lat2 += 20) {
+        var phi2 = lat2 * Math.PI / 180;
+        var r2 = R * Math.cos(phi2);
+        var yy = cy - R * Math.sin(phi2);
+        ctx.beginPath();
+        ctx.ellipse(cx, yy, r2, r2 * 0.15, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(42,172,184,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Equator highlight
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, R, R * 0.15, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(232,52,26,0.3)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
     }
-    anim();
-    window.addEventListener('click', function(e){
-      for(var i=0;i<12;i++){
-        (function(){
-          var b=document.createElement('div');
-          var sz=Math.random()*16+8;
-          var col=colors[Math.floor(Math.random()*colors.length)];
-          var dx=(Math.random()-0.5)*140, dy=(Math.random()-0.5)*140;
-          b.style.cssText='position:fixed;width:'+sz+'px;height:'+sz+'px;background:'+col+';border-radius:50%;left:'+(e.clientX-sz/2)+'px;top:'+(e.clientY-sz/2)+'px;pointer-events:none;z-index:99999;box-shadow:0 0 '+(sz*2)+'px '+col+';transition:all 0.7s ease;';
-          document.body.appendChild(b);
-          setTimeout(function(){ b.style.transform='translate('+dx+'px,'+dy+'px) scale(0)'; b.style.opacity='0'; },20);
-          setTimeout(function(){ b.remove(); },800);
-        })();
+
+    function animGlobe() {
+      // Scroll se speed badhti hai
+      var speed = 0.003 + (scrollY * 0.00008);
+      rotation += speed;
+      drawGlobe(rotation);
+      requestAnimationFrame(animGlobe);
+    }
+    animGlobe();
+
+    // Scroll pe position bhi shift ho
+    window.addEventListener('scroll', function() {
+      var globeBg = document.getElementById('globeBg');
+      if (globeBg) {
+        var offset = window.scrollY * 0.15;
+        globeBg.style.transform = 'translateY(calc(-50% + ' + offset + 'px))';
       }
     });
   })();
 
 
-  // Book Portfolio
-  function openCategory(cat) {
-    document.querySelectorAll('.book-page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + cat).classList.add('active');
-    document.getElementById('portfolio').scrollIntoView({behavior:'smooth', block:'start'});
-  }
-  function goBack() {
-    document.querySelectorAll('.book-page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-index').classList.add('active');
-  }
-
-  // ===== BOOK PORTFOLIO =====
-  var currentPage = 'coverPage';
-
-  function openCategory(cat) {
-    var pageMap = {
-      'thumbnails': 'thumbnailsPage',
-      'poster': 'posterPage',
-      'insta': 'instaPage',
-      'social': 'socialPage',
-      'brand': 'brandPage'
-    };
-    flipTo(pageMap[cat]);
-  }
-
-  function goBack() {
-    flipTo('coverPage');
-  }
-
-  function flipTo(targetId) {
-    var current = document.getElementById(currentPage);
-    var target = document.getElementById(targetId);
-    if (!current || !target || currentPage === targetId) return;
-
-    current.classList.add('flip-out');
-    current.classList.remove('active');
-
-    setTimeout(function() {
-      current.classList.remove('flip-out');
-      target.classList.add('active');
-      currentPage = targetId;
-    }, 350);
-  }
-
-  function openDesign(slot) {
-    var img = slot.querySelector('img');
-    if (!img) return;
-    var lb = document.getElementById('lightbox');
-    document.getElementById('lightboxImg').src = img.src;
-    lb.classList.add('open');
-  }
-
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
-  }
-
 </script><script>
 
 
-  // ===== MOUSE TRAIL EFFECT =====
-  const trailColors = ['#E8341A','#2AACB8','#ff6b35','#4ecbd6','#ffffff','#E8341A','#2AACB8'];
-  const trail = [];
-  const TRAIL_LEN = 20;
-
-  for (let i = 0; i < TRAIL_LEN; i++) {
-    const t = document.createElement('div');
-    const size = 22 - i * 0.7;
-    t.style.cssText = `
-      position:fixed;
-      width:${size}px;height:${size}px;
-      background:${trailColors[i % trailColors.length]};
-      border-radius:50%;
-      pointer-events:none;
-      z-index:99999;
-      left:-100px;top:-100px;
-      opacity:${1 - i/TRAIL_LEN};
-      transform:scale(1);
-      transition:transform 0.1s;
-      box-shadow:0 0 ${size*1.5}px ${trailColors[i % trailColors.length]};
-    `;
-    document.body.appendChild(t);
-    trail.push({ el: t, x: -100, y: -100 });
-  }
-
-  let mx = -100, my = -100;
-  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
-  function animTrail() {
-    let px = mx, py = my;
-    trail.forEach((t, i) => {
-      const ox = t.x, oy = t.y;
-      t.x += (px - t.x) * 0.35;
-      t.y += (py - t.y) * 0.35;
-      t.el.style.left = (t.x - parseFloat(t.el.style.width)/2) + 'px';
-      t.el.style.top  = (t.y - parseFloat(t.el.style.height)/2) + 'px';
-      px = ox; py = oy;
-    });
-    requestAnimationFrame(animTrail);
-  }
-  animTrail();
-
-  // Click burst
-  window.addEventListener('click', e => {
-    for (let i = 0; i < 12; i++) {
-      const b = document.createElement('div');
-      const sz = Math.random() * 18 + 8;
-      const col = trailColors[Math.floor(Math.random()*trailColors.length)];
-      b.style.cssText = `
-        position:fixed;width:${sz}px;height:${sz}px;
-        background:${col};border-radius:50%;
-        left:${e.clientX - sz/2}px;top:${e.clientY - sz/2}px;
-        pointer-events:none;z-index:99999;
-        box-shadow:0 0 ${sz*2}px ${col};
-        transition:all 0.7s cubic-bezier(.22,1,.36,1);
-      `;
-      document.body.appendChild(b);
-      setTimeout(() => {
-        b.style.transform = `translate(${(Math.random()-0.5)*120}px,${(Math.random()-0.5)*120}px) scale(0)`;
-        b.style.opacity = '0';
-      }, 20);
-      setTimeout(() => b.remove(), 800);
-    }
-  });
-
-  // Form submit
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
-    // Let formspree handle it - just show message after delay
-    setTimeout(() => {
-      document.getElementById('successMsg').style.display = 'block';
-    }, 500);
-  });
-
-  // Book Portfolio
-  function openCategory(cat) {
-    document.querySelectorAll('.book-page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + cat).classList.add('active');
-    document.getElementById('portfolio').scrollIntoView({behavior:'smooth', block:'start'});
-  }
-  function goBack() {
-    document.querySelectorAll('.book-page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-index').classList.add('active');
-  }
-
   // ===== BOOK PORTFOLIO =====
   var currentPage = 'coverPage';
 
@@ -1722,6 +1793,239 @@
     document.getElementById('lightbox').classList.remove('open');
   }
 
+
+  // ===== ROTATING GLOBE =====
+  (function() {
+    var canvas = document.getElementById('globeCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = 520, H = 520;
+    canvas.width = W;
+    canvas.height = H;
+    var cx = W/2, cy = H/2, R = 220;
+    var rotation = 0;
+    var scrollY = 0;
+
+    window.addEventListener('scroll', function() {
+      scrollY = window.scrollY;
+    });
+
+    // Lat/lon lines
+    function drawGlobe(rot) {
+      ctx.clearRect(0, 0, W, H);
+
+      // Outer glow
+      var grad = ctx.createRadialGradient(cx, cy, R*0.6, cx, cy, R);
+      grad.addColorStop(0, 'rgba(42,172,184,0.15)');
+      grad.addColorStop(1, 'rgba(232,52,26,0.05)');
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI*2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Clip to circle
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI*2);
+      ctx.clip();
+
+      // Longitude lines
+      ctx.strokeStyle = 'rgba(42,172,184,0.6)';
+      ctx.lineWidth = 0.8;
+      for (var lon = 0; lon < 180; lon += 20) {
+        var angle = lon * Math.PI / 180 + rot;
+        ctx.beginPath();
+        for (var lat = -90; lat <= 90; lat += 2) {
+          var phi = lat * Math.PI / 180;
+          var x = cx + R * Math.cos(phi) * Math.sin(angle);
+          var z = Math.cos(phi) * Math.cos(angle);
+          var y = cy - R * Math.sin(phi);
+          if (z > 0) {
+            if (lat === -90) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          } else {
+            ctx.moveTo(x, y);
+          }
+        }
+        ctx.stroke();
+      }
+
+      // Latitude lines
+      ctx.strokeStyle = 'rgba(232,52,26,0.4)';
+      ctx.lineWidth = 0.6;
+      for (var lat2 = -80; lat2 <= 80; lat2 += 20) {
+        var phi2 = lat2 * Math.PI / 180;
+        var r2 = R * Math.cos(phi2);
+        var yy = cy - R * Math.sin(phi2);
+        ctx.beginPath();
+        ctx.ellipse(cx, yy, r2, r2 * 0.15, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(42,172,184,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Equator highlight
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, R, R * 0.15, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(232,52,26,0.3)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    function animGlobe() {
+      // Scroll se speed badhti hai
+      var speed = 0.003 + (scrollY * 0.00008);
+      rotation += speed;
+      drawGlobe(rotation);
+      requestAnimationFrame(animGlobe);
+    }
+    animGlobe();
+
+    // Scroll pe position bhi shift ho
+    window.addEventListener('scroll', function() {
+      var globeBg = document.getElementById('globeBg');
+      if (globeBg) {
+        var offset = window.scrollY * 0.15;
+        globeBg.style.transform = 'translateY(calc(-50% + ' + offset + 'px))';
+      }
+    });
+  })();
+
+
 </script>
+
+<!-- GLOBAL PROFESSIONAL TIPS TICKER -->
+<div class="global-ticker">
+  <div class="ticker-label">💡 PRO TIPS</div>
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item">Use <span class="tip-highlight">contrast colors</span> to make text pop on thumbnails <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">Always design at <span class="tip-highlight">1280×720px</span> for YouTube thumbnails <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item"><span class="tip-highlight">Faces with emotions</span> get 30% more clicks on thumbnails <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">Use max <span class="tip-highlight">3 fonts</span> in any design — less is more <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item"><span class="tip-highlight">Rule of thirds</span> — place subject on grid intersections <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">Instagram posts perform best at <span class="tip-highlight">1080×1080px</span> square format <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item"><span class="tip-highlight">Bold text + simple background</span> = winning thumbnail formula <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">Always export designs as <span class="tip-highlight">PNG</span> for best quality <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item"><span class="tip-highlight">Consistency</span> in colors builds a strong brand identity <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">First <span class="tip-highlight">3 seconds</span> of a reel decide if viewers stay or scroll <span class="ticker-dot">✦</span></span>
+    <!-- DUPLICATE for seamless loop -->
+    <span class="ticker-item">Use <span class="tip-highlight">contrast colors</span> to make text pop on thumbnails <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">Always design at <span class="tip-highlight">1280×720px</span> for YouTube thumbnails <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item"><span class="tip-highlight">Faces with emotions</span> get 30% more clicks on thumbnails <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">Use max <span class="tip-highlight">3 fonts</span> in any design — less is more <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item"><span class="tip-highlight">Rule of thirds</span> — place subject on grid intersections <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">Instagram posts perform best at <span class="tip-highlight">1080×1080px</span> square format <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item"><span class="tip-highlight">Bold text + simple background</span> = winning thumbnail formula <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">Always export designs as <span class="tip-highlight">PNG</span> for best quality <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item"><span class="tip-highlight">Consistency</span> in colors builds a strong brand identity <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">First <span class="tip-highlight">3 seconds</span> of a reel decide if viewers stay or scroll <span class="ticker-dot">✦</span></span>
+  </div>
+</div>
+
+
+<!-- GLOBAL PROFESSIONAL BACKGROUND -->
+<canvas id="globalBg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.55;"></canvas>
+<script>
+(function() {
+  var canvas = document.getElementById('globalBg');
+  var ctx = canvas.getContext('2d');
+  var W, H;
+  var nodes = [];
+  var NODE_COUNT = 80;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Create nodes
+  for (var i = 0; i < NODE_COUNT; i++) {
+    nodes.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 2 + 1,
+      color: Math.random() > 0.5 ? '#E8341A' : '#2AACB8'
+    });
+  }
+
+  var mouseX = W/2, mouseY = H/2;
+  window.addEventListener('mousemove', function(e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Move nodes
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      n.x += n.vx;
+      n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+
+      // Mouse attraction — subtle
+      var dx = mouseX - n.x;
+      var dy = mouseY - n.y;
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 180) {
+        n.vx += dx * 0.00015;
+        n.vy += dy * 0.00015;
+      }
+
+      // Speed limit
+      var speed = Math.sqrt(n.vx*n.vx + n.vy*n.vy);
+      if (speed > 1.2) { n.vx *= 0.95; n.vy *= 0.95; }
+    }
+
+    // Draw connections
+    for (var i = 0; i < nodes.length; i++) {
+      for (var j = i + 1; j < nodes.length; j++) {
+        var dx = nodes[i].x - nodes[j].x;
+        var dy = nodes[i].y - nodes[j].y;
+        var d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 120) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          var alpha = (1 - d/120) * 0.35;
+          ctx.strokeStyle = nodes[i].color === '#E8341A'
+            ? 'rgba(232,52,26,' + alpha + ')'
+            : 'rgba(42,172,184,' + alpha + ')';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Draw nodes
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = n.color === '#E8341A'
+        ? 'rgba(232,52,26,0.8)'
+        : 'rgba(42,172,184,0.8)';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
 </body>
 </html>
